@@ -1,0 +1,14 @@
+.products_filter {
+    display: flex;
+    padding: 70px 0px 30px 50px;
+
+}
+
+.filterCAP {
+    width: 20%;
+    margin-right: 30px;
+}
+
+.products_cate {
+    width: 70%;
+}

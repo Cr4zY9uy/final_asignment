@@ -1,0 +1,105 @@
+.product-list>figure {
+    width: 20%;
+    margin: 0 10px 30px 10px;
+    overflow: hidden;
+    position: relative;
+    height: 400px;
+}
+
+
+.product-list>figure:last-of-type {
+    margin-right: 0;
+}
+
+.product-list>figure:first-of-type {
+    margin-left: 0;
+}
+
+.product-action button {
+    width: 100%;
+    text-transform: uppercase;
+    color: #333;
+    border: .1rem solid #ebebeb;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    display: none;
+    transition: all .12s ease;
+
+}
+
+.product-list>figure:hover .product-action>button {
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    animation: SlideUp .3s ease-in-out;
+}
+
+.product-list>figure p {
+    margin-bottom: 0;
+}
+
+.product-list>figure p:first-of-type {
+    margin-top: 10px;
+}
+
+.product-action>button:hover {
+    background-color: #a49e9e;
+    color: #ebebeb;
+}
+
+@keyframes SlideUp {
+    0% {
+        transform: translateY(100px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+
+.favourite {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+
+
+.favourite>i {
+    color: #1c1c1cc5;
+    z-index: 100;
+    font-size: 13px;
+    vertical-align: middle !important;
+}
+
+.favourite:hover>i {
+    color: #ffffff;
+}
+
+.favourite:hover {
+    background-color: #a49e9e;
+}
+
+
+.product-list>figure:hover .favourite {
+    display: flex;
+    position: absolute;
+    top: 15px;
+    left: 155px;
+    animation: SlideLeft .3s ease-in-out;
+}
+
+@keyframes SlideLeft {
+    0% {
+        transform: translateX(-10px);
+    }
+
+    100% {
+        transform: translateX(0px);
+    }
+}
