@@ -1,5 +1,10 @@
 import './cart.css';
+import { useNavigate } from 'react-router-dom';
 function Cart() {
+    const navigate = useNavigate();
+    const checkout = () => {
+        navigate('/checkout');
+    }
     return (
         <div className="container mt-4 d-flex flex-column" >
             <div className="row  d-flex justify-content-between" id="shopping">
@@ -43,12 +48,12 @@ function Cart() {
                     <h3 style={{ paddingBottom: 32 }}>Cart total</h3>
                     <hr />
                     <div className="subTotal d-flex justify-content-between">
-                    <h5>Subtotal</h5>
+                        <h5>Subtotal</h5>
                     </div> <br />
 
-                    <div style={{ display: "flex", justifyContent: "space-between",paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                    <div style={{ display: "flex", justifyContent: "space-between",paddingTop: "5px"  }}><span>The coffee</span><span>1000$</span></div>
-                    <div style={{ display: "flex", justifyContent: "space-between",paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
                     <div style={{ textAlign: "right", paddingTop: "10px" }}>1000$
                     </div>
                     <hr />
@@ -57,7 +62,7 @@ function Cart() {
                     <hr />
                     <div className="total d-flex justify-content-between align-items-center">
                         <h3>Total</h3><span id="total" className="flex">1010$</span></div>
-                    <button type="button" className="btn btn-danger mt-4">Proceed to checkout</button>
+                    <button type="button" className="btn btn-danger mt-4" onClick={checkout}>Proceed to checkout</button>
                 </div>
             </div>
 

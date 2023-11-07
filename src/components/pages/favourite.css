@@ -50,3 +50,13 @@
     top: 10px;
     left: 240px;
 }
+.info_pro p{
+    margin: 0;
+    padding:3px 10px;
+}
+.info_pro p:first-of-type{
+    padding-top: 13px;
+}
+.info_pro .rating{
+    font-size: 0.8rem;
+}

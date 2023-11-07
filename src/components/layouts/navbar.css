@@ -40,10 +40,6 @@
     background-color: #0000003e;
 }
 
-.menu1 a:hover,
-.menu1:hover .dropmenu {
-    background-color: #00000010;
-}
 
 .menu1 {
     float: left;
@@ -89,11 +85,11 @@
     top: 0;
     background-color: #000000;
 } */
-.menu1_item {
+.menu1_item,.menu1 {
     position: relative;
 }
 
-.menu1_item::before {
+.menu1_item::before,.menu1::before {
     content: '';
     display: block;
     position: absolute;
@@ -105,9 +101,15 @@
 
 }
 
-.menu1_item:hover::before {
+.menu1_item:hover::before,.menu1:hover::before {
     background-color: #0000003e;
     transform-origin: right center;
     transform: scale(0, 1);
     transition: transform .9s ease;
+}
+.parent_nav{
+    position: sticky;
+    top: 0;
+    background-color: #ffffff80;
+    z-index: 1000;
 }

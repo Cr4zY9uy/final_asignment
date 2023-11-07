@@ -19,6 +19,7 @@ function Header() {
                             <NavLink to={"/login"}><span>Login</span></NavLink><span>/</span><NavLink to={"/sign-up"}><span>Register</span></NavLink>
                             <div className='sub_menu'>
                                 <NavLink to={"/account"}><span>Account</span></NavLink>
+                                <NavLink to={"/favourite"}><span>Favourite</span></NavLink>
                                 <NavLink to={"/orders"}><span>Orders</span></NavLink>
                                 <NavLink to={"/orderdetail"}><span>Logout</span></NavLink>
                             </div>

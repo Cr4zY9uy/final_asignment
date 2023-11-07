@@ -62,7 +62,7 @@ a {
 
 .main_menu:hover .sub_menu {
     display: block;
-    z-index: 10;
+    z-index: 10000;
 }
 
 .number {

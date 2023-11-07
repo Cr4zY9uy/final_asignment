@@ -10,8 +10,16 @@ function ProductsCate() {
                         <a href="#">
                             <img src="./images/product1.jfif" height="270px" alt='product_image' />
                         </a>
-                        <p>COFFEE 1</p>
-                        <p>500$</p>
+                        <div>
+                    <p className='product_name'>Coffee Beans 1</p>
+                    <p className='product_price'>500$</p>
+                    <p className='rating'><i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </p>
+                </div>
                         <div className="product-action">
                             <button className="btn-product btn-cart "><span>Add to cart</span></button>
                         </div>
@@ -21,8 +29,16 @@ function ProductsCate() {
                         <a href="#">
                             <img src="./images/product1.jfif" height="270px" alt='product_image' />
                         </a>
-                        <p>COFFEE 1</p>
-                        <p>500$</p>
+                        <div>
+                    <p className='product_name'>Coffee Beans 1</p>
+                    <p className='product_price'>500$</p>
+                    <p className='rating'><i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </p>
+                </div>
                         <div className="product-action">
                             <button className="btn-product btn-cart"><span>Add to cart</span></button>
                         </div>
@@ -33,8 +49,16 @@ function ProductsCate() {
                         <a href="#">
                             <img src="./images/product1.jfif" height="270px" alt='product_image' />
                         </a>
-                        <p>COFFEE 1</p>
-                        <p>500$</p>
+                        <div>
+                    <p className='product_name'>Coffee Beans 1</p>
+                    <p className='product_price'>500$</p>
+                    <p className='rating'><i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </p>
+                </div>
                         <div className="product-action">
                             <button className="btn-product btn-cart"><span>Add to cart</span></button>
                         </div>
@@ -44,8 +68,16 @@ function ProductsCate() {
                         <a href="#">
                             <img src="./images/product1.jfif" height="270px" alt='product_image' />
                         </a>
-                        <p>COFFEE 1</p>
-                        <p>500$</p>
+                        <div>
+                    <p className='product_name'>Coffee Beans 1</p>
+                    <p className='product_price'>500$</p>
+                    <p className='rating'><i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </p>
+                </div>
                         <div className="product-action">
                             <button className="btn-product btn-cart"><span>Add to cart</span></button>
                         </div>
