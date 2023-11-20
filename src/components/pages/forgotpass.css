@@ -127,3 +127,9 @@ input[type="checkbox"] {
         display: initial;
     }
 }
+
+.home_forgot {
+    position: relative;
+    top: -29.5vh;
+    right: -2vw;
+}

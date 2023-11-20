@@ -80,6 +80,7 @@
 
 .add-to-favourite:hover {
     color: #e22f2f;
+    cursor: pointer;
 }
 
 .tab-pane p {
@@ -98,7 +99,7 @@ button[class='nav-link']:hover {
     border: none !important;
     transition: none !important;
     width: 300px !important;
-    height: 80px !important;
+    height: 60px !important;
     border-radius: 0 !important;
 }
 
@@ -109,7 +110,7 @@ button[class='nav-link active'] {
     border-radius: 0 !important;
     border: none !important;
     width: 300px !important;
-    height: 80px !important;
+    height: 60px !important;
 
 }
 
@@ -117,6 +118,11 @@ ul[class='mb-3 tab nav nav-tabs nav-fill'] {
     border-bottom: none !important;
     width: 600px;
     padding-top: 80px;
+
+}
+
+div[class='tab-content'] {
+    height: 450px;
 }
 
 button[class='nav-link'],
@@ -158,7 +164,7 @@ button[class='nav-link']:hover {
 
 .related_products {
     display: flex;
-    padding-top: 50px;
+    margin-top: -220px;
 }
 
 .related_products h1 {
@@ -167,7 +173,7 @@ button[class='nav-link']:hover {
     padding-bottom: 30px;
 }
 
-.producti {
+.producti a {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -182,10 +188,37 @@ button[class='nav-link']:hover {
     padding-top: 25px;
     font-size: 1.4rem;
     font-weight: 500;
+    color: #495057;
 }
 
 .producti span:last-of-type {
-    color: #495057;
+    color: #e22f2f;
     font-weight: 400;
     font-size: 1.2rem;
+}
+
+
+.reviewer_pic {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reviewer_name {
+    font-size: 1.3rem;
+    text-align: start;
+    margin-bottom: 0 !important;
+}
+
+.reviewer_feedback {
+    font-size: .9rem;
+    color: #495057b9 !important;
+    text-align: start;
+    margin-bottom: 0 !important;
+}
+
+.reviewer_rating {
+    line-height: 1rem !important;
+    color: #ffff00c9 !important;
 }

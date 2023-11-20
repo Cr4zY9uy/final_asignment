@@ -1,5 +1,5 @@
 import './App.css';
-import { Route } from 'react-router-dom';
+import { Route, useParams } from 'react-router-dom';
 import Header from './components/layouts/header';
 import Navbars from './components/layouts/navbar';
 import { Routes } from 'react-router-dom';
@@ -19,10 +19,10 @@ import { useLocation } from 'react-router-dom';
 import ForgotPass from './components/pages/forgotpass';
 import ResetPass from './components/pages/resetpass';
 import Checkout from './components/pages/checkout';
+import Search from './components/pages/search';
 function App() {
   const location = useLocation();
-
-  const hideHeaderOnLogin = location.pathname === '/login' || location.pathname === '/sign-up' || location.pathname === '/resetpass' || location.pathname === '/forgotpass';
+  const hideHeaderOnLogin = location.pathname === '/login' || location.pathname === '/sign-up' || location.pathname.includes('/resetpass') || location.pathname === '/forgotpass';
   return (
     <div className="App">
       {!hideHeaderOnLogin && <Header />}
@@ -30,18 +30,19 @@ function App() {
       <main>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/category' element={<CategoryDetail />} />
+          <Route path='/category/:name' element={<CategoryDetail />} />
           <Route path='/products' element={<Products />} />
-          <Route path='/product' element={<Product />} />
+          <Route path='/search/:pro' element={<Search />} />
+          <Route path='/product/:id' element={<Product />} />
           <Route path='/cart' element={<Cart />} />
           <Route path='/sign-up' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path='/forgotpass' element={<ForgotPass />} />
-          <Route path='/resetpass' element={<ResetPass />} />
+          <Route path='/resetpass/:rid' element={<ResetPass />} />
           <Route path='/favourite' element={<Favourite />} />
           <Route path='/account' element={<Account />} />
           <Route path='/orders' element={<Orders />} />
-          <Route path='/orderdetail' element={<OrdersDetail />} />
+          <Route path='/orderdetail/:detail' element={<OrdersDetail />} />
           <Route path='/checkout' element={<Checkout />} />
         </Routes>
         {!hideHeaderOnLogin && <Footer />}

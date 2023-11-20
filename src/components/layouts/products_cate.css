@@ -1,18 +1,17 @@
-
 .products_result>figure {
     width: 25%;
-    margin: 0 10px 30px 10px;
+    margin: 0 0px 30px 0px;
     overflow: hidden;
     position: relative;
     height: 400px;
 }
 
 .result h3 {
-   text-align: left;
-   font-size: 16px;
-   font-weight: 300;
-   color: #000000ce;
-   padding: 8px 0 30px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 300;
+    color: #000000ce;
+    padding: 8px 0 30px;
 }
 
 .products_result>figure:last-of-type {
@@ -86,7 +85,7 @@
 }
 
 .favourite:hover>i {
-    color: #ffffff;
+    color: #ffffff !important;
 }
 
 .favourite:hover {

@@ -140,3 +140,8 @@
 .tax_bill h5 {
     font-weight: 400;
 }
+
+#total {
+    font-weight: 500;
+    font-size: 1.4rem;
+}

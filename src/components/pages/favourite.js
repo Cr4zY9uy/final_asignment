@@ -1,6 +1,17 @@
 import { Row, Col, Card } from "react-bootstrap";
 import './favourite.css'
-function Favourite() {
+import ScrollToTop from "react-scroll-to-top";
+import FAVOURITE_ACTION from "../../redux/favourite/favourite_action";
+import { connect } from "react-redux";
+import { Rate } from "antd";
+import { Link } from "react-router-dom";
+function Favourite(props) {
+    const favouriteList = props.state.favourite;
+    const deleteFavourite = (index) => {
+        const deleteList = [...favouriteList];
+        deleteList.splice(index, 1);
+        props.deleteFavourite(deleteList);
+    }
     return (
         <>
             <div className='banner_favourite'>
@@ -9,96 +20,45 @@ function Favourite() {
 
             <div className="container">
                 <Row className="h-30">
-                    <Col xs={3} className="mt-2 mb-2 text-center h-50 item">
-                        <div className="delete_button" typeof="submit"><i class="bi bi-x-lg"></i></div>
-                        <Card>
-                            <Card.Img variant="top" src="./images/product1.jfif" alt="product-img" height={"300px"} loading="lazy" />
-                            <Card.Title>
-                                <div className="info_pro">
-                                    <p className='product_name'>Coffee Beans 1</p>
-                                    <p className='product_price'>500$</p>
-                                    <p className='rating'><i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </p>
-                                </div></Card.Title>
-                        </Card>
-                    </Col>
-                    <Col xs={3} className="mt-2 mb-2 text-center h-50 item">
-                        <div className="delete_button" typeof="submit"><i class="bi bi-x-lg"></i></div>
-                        <Card>
-                            <Card.Img variant="top" src="./images/product1.jfif" alt="product-img" height={"300px"} loading="lazy" />
-                            <Card.Title>
-                                <div className="info_pro">
-                                    <p className='product_name'>Coffee Beans 1</p>
-                                    <p className='product_price'>500$</p>
-                                    <p className='rating'><i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </p>
-                                </div></Card.Title>
-                        </Card>
-                    </Col>
-                    <Col xs={3} className="mt-2 mb-2 text-center h-50 item">
-                        <div className="delete_button" typeof="submit"><i class="bi bi-x-lg"></i></div>
-                        <Card>
-                            <Card.Img variant="top" src="./images/product1.jfif" alt="product-img" height={"300px"} loading="lazy" />
-                            <Card.Title>
-                                <div className="info_pro">
-                                    <p className='product_name'>Coffee Beans 1</p>
-                                    <p className='product_price'>500$</p>
-                                    <p className='rating'><i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </p>
-                                </div>
-                            </Card.Title>
-                        </Card>
-                    </Col>
-                    <Col xs={3} className="mt-2 mb-2 text-center h-50 item">
-                        <div className="delete_button" typeof="submit"><i class="bi bi-x-lg"></i></div>
-                        <Card>
-                            <Card.Img variant="top" src="./images/product1.jfif" alt="product-img" height={"300px"} loading="lazy" />
-                            <Card.Title>
-                                <div className="info_pro">
-                                    <p className='product_name'>Coffee Beans 1</p>
-                                    <p className='product_price'>500$</p>
-                                    <p className='rating'><i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </p>
-                                </div></Card.Title>
-                        </Card>
-                    </Col>
-                    <Col xs={3} className="mt-2 mb-2 text-center h-50 item">
-                        <div className="delete_button" typeof="submit"><i class="bi bi-x-lg"></i></div>
-                        <Card>
-                            <Card.Img variant="top" src="./images/product1.jfif" alt="product-img" height={"300px"} loading="lazy" />
-                            <Card.Title>
-                                <div className="info_pro">
-                                    <p className='product_name'>Coffee Beans 1</p>
-                                    <p className='product_price'>500$</p>
-                                    <p className='rating'><i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </p>
-                                </div></Card.Title>
-                        </Card>
-                    </Col>
+                    {
+                        favouriteList.map((item, index) => (
+                            <Col xs={3} className="mt-2 mb-2 text-center h-50 item" key={index}>
+
+                                <div className="delete_button" typeof="submit" onClick={() => deleteFavourite(index)}><i className="bi bi-x-lg"></i></div>
+                                <Card>
+                                    <Link to={`/product/${item.product_id}`}>
+                                        <Card.Img variant="top" src={item.thumbnail} alt="product-img" height={"300px"} loading="lazy" />
+                                        <Card.Title>
+                                            <div className="info_pro">
+                                                <p className='product_name'>{item.title}</p>
+                                                <p className='product_price'>{item.price}$</p>
+                                                <Rate disabled value={item.rating} style={{ color: "#d8d81a", fontSize: "1rem", display: "flex", paddingLeft: "10px" }} />
+                                            </div>
+                                        </Card.Title>
+                                    </Link>
+                                </Card>
+
+                            </Col>
+                        ))
+                    }
+
                 </Row>
             </div>
+            <ScrollToTop smooth color="#000" />
 
         </>
     );
 }
-export default Favourite;
+const mapStateToProps = (state, ownProp) => {
+    return {
+        state: state.favourite_reducer
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deleteFavourite: (favourite) => {
+            dispatch({ type: FAVOURITE_ACTION.DELETE_FAVOURITE, payload: favourite })
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Favourite);

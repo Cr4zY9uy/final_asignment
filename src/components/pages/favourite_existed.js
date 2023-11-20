@@ -1,27 +1,12 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Modal from 'antd/es/modal/Modal';
 import './favourite_existed.css';
 function FavouriteExisted(props) {
+    const isModalOpen = props.status;
     return (
-        <Modal
-            {...props}
-            size="md"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Notice
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p className='text-center'>
-                    Product was in your favourite item list
-                </p>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
+        <Modal open={isModalOpen} footer={null} closable={false} width={620} centered={true} className='loading'>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <p className='words'>This product has already been in your wishlist</p>
+            </div>
         </Modal>
     );
 }

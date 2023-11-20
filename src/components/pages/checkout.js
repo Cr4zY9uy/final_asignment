@@ -1,10 +1,89 @@
 import './checkout.css';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import Thanks from './thanks';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-function Checkout() {
+import { connect } from 'react-redux';
+import CART_ACTION from '../../redux/cart/cart_action';
+import ORDER_ACTION from '../../redux/order/order_action';
+import ORDER_DETAIL_ACTION from '../../redux/orderdetails/orderdetail_action';
+import { add_order } from '../../services/order_service';
+import { addFOC } from '../../services/user_service';
+function Checkout(props) {
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
+    const [payment, setPayment] = useState("Credit card");
+    const [shipping, setShipping] = useState("Free");
+    const [data, setData] = useState({});
+    const shippingCost = {
+        Free: 0,
+        Standard: 10,
+        Express: 100
+    };
+    const order = props.state[2].order;
+    const cartList = props.state[0].cart;
+    const user_id = props.state[1].currentUser.user_id;
+    const items = cartList.map((product) => ({
+        title: product.title,
+        thumbnail: product.thumbnail,
+        quantity: product.quantity,
+        price: product.price,
+        product_id: product.product_id
+    }))
+    const sumMoney = cartList.reduce((initValue, item) => {
+        initValue += item.price * item.quantity;
+        return initValue;
+    }, 0)
+    const total = sumMoney + sumMoney * 0.1 + shippingCost[shipping];
+    const handleFirstName = (e) => {
+        setFirstName(e.target.value);
+    }
+    const handleLastName = (e) => {
+        setLastName(e.target.value);
+    }
+    const handleEmail = (e) => {
+        setEmail(e.target.value);
+    }
+    const handleAddress = (e) => {
+        setAddress(e.target.value);
+    }
+    const handlePhone = (e) => {
+        setPhone(e.target.value);
+    }
+    const order_detail = {
+        first_name: first_name,
+        last_name: last_name,
+        address: address,
+        phone: phone,
+        email: email,
+        payment: payment,
+        shipping: shipping,
+        items: items,
+        total: total
+    }
+    const changeActivePayment = (e) => {
+        const clickedOption = e.currentTarget;
+        document.querySelectorAll('.payment').forEach(option => {
+            option.classList.remove('active');
+        });
+        clickedOption.classList.add('active');
+        const selectedPayment = clickedOption.getAttribute('data-value');
+        console.log(selectedPayment);
+        setPayment(selectedPayment);
+    }
+    const changeActiveShipping = (e) => {
+        const clickedOption = e.currentTarget;
+        document.querySelectorAll('.shipping').forEach(option => {
+            option.classList.remove('active');
+        });
+        clickedOption.classList.add('active');
+        const selectedShipping = clickedOption.getAttribute('data-value');
+        console.log(selectedShipping);
+        setShipping(selectedShipping);
+    }
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const showModal = () => {
@@ -14,6 +93,41 @@ function Checkout() {
             navigate('/');
         }, 2000);
     };
+
+    const placeOrder = async () => {
+        try {
+            const rs = await add_order(order_detail);
+            const order_detail_ls = {
+                order_id: rs,
+                first_name: first_name,
+                last_name: last_name,
+                address: address,
+                phone: phone,
+                email: email,
+                payment: payment,
+                shipping: shipping,
+                items: items,
+                total: total
+            }
+            order.push(order_detail_ls);
+            props.addOrder(order);
+            const O = {
+                user_id: user_id,
+                order: [rs]
+            }
+            setData(O)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    // useEffect(() => {
+    //     console.log(data);
+    // }, [data])
+    const delete_cart_A_add_order = async () => {
+        const rs = await addFOC(data);
+        // props.deleteCart();
+    }
+
     return (
         <section className='container'>
             <h1 className="checkout_title pb-3">Checkout</h1>
@@ -24,36 +138,36 @@ function Checkout() {
                         <Row>
                             <Col>
                                 <Form.Label>First name</Form.Label>
-                                <Form.Control type="text" />
+                                <Form.Control type="text" name='first_name' onChange={(e) => handleFirstName(e)} />
                             </Col>
                             <Col>
                                 <Form.Label>Last name</Form.Label>
-                                <Form.Control type="text" />
+                                <Form.Control type="text" name='last_name' onChange={(e) => handleLastName(e)} />
                             </Col>
                         </Row>
                     </Form.Group>
                     <Form.Group className="mb-3" >
                         <Form.Label>Address</Form.Label>
-                        <Form.Control type="text" />
+                        <Form.Control type="text" name='address' onChange={(e) => handleAddress(e)} />
                     </Form.Group>
                     <Form.Group className="mb-3" >
                         <Form.Label>Phone</Form.Label>
-                        <Form.Control type="text" />
+                        <Form.Control type="text" name='phone' onChange={(e) => handlePhone(e)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" />
+                        <Form.Control type="email" name='email' onChange={(e) => handleEmail(e)} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Payment method</Form.Label>
                         <Row>
-                            <Col>
+                            <Col name='payment' className='payment active' data-value='Credit card' onClick={(e) => changeActivePayment(e)}>
                                 <div className='credit'><div><i className="bi bi-credit-card-2-back-fill"></i><span>Credit Card</span></div><i className="bi bi-check2-circle"></i></div>
                             </Col>
-                            <Col>
-                                <div className='paypal active'><div><i className="bi bi-paypal"></i><span>Paypal</span></div><i className="bi bi-check2-circle"></i></div>
+                            <Col name='payment' className='payment' data-value='Paypal' onClick={(e) => changeActivePayment(e)}>
+                                <div className='paypal'><div><i className="bi bi-paypal"></i><span>Paypal</span></div><i className="bi bi-check2-circle"></i></div>
                             </Col>
-                            <Col>
+                            <Col name='payment' className='payment' data-value='COD' onClick={(e) => changeActivePayment(e)}>
                                 <div className='cod'><div><i className="bi bi-wallet-fill"></i><span>COD</span></div><i className="bi bi-check2-circle"></i></div>
                             </Col>
                         </Row>
@@ -61,14 +175,14 @@ function Checkout() {
                     <Form.Group style={{ paddingTop: "20px" }}>
                         <Form.Label>Shipping method</Form.Label>
                         <Row>
-                            <Col>
-                                <div className='free'><div><i className="bi bi-envelope-fill"></i><span>Free</span></div><i className="bi bi-check2-circle"></i></div>
+                            <Col name='shipping' className='shipping active' data-value='Free' onClick={(e) => changeActiveShipping(e)}>
+                                <div className='free '><div><i className="bi bi-envelope-fill"></i><span>Free</span></div><i className="bi bi-check2-circle"></i></div>
                             </Col>
-                            <Col>
-                                <div className='standard active'><div><i className="bi bi-archive-fill"></i><span>Standard</span></div><i className="bi bi-check2-circle"></i></div>
+                            <Col name='shipping' className='shipping' data-value='Standard' onClick={(e) => changeActiveShipping(e)}>
+                                <div className='standard  '><div><i className="bi bi-archive-fill"></i><span>Standard</span></div><i className="bi bi-check2-circle"></i></div>
                             </Col>
-                            <Col>
-                                <div className='express'><div><i className="bi bi-send-fill"></i><span>Express</span></div><i className="bi bi-check2-circle"></i></div>
+                            <Col name='shipping' className='shipping' data-value='Express' onClick={(e) => changeActiveShipping(e)}>
+                                <div className='express '><div><i className="bi bi-send-fill"></i><span>Express</span></div><i className="bi bi-check2-circle"></i></div>
                             </Col>
                         </Row>
                     </Form.Group>
@@ -79,9 +193,11 @@ function Checkout() {
                     <div className='order_info'>
                         <h4 className='sumary_title'>Order Information</h4>
                         <div className='sumary_product'>
-                            <div className='product_summary'><div className='pic'><img src="./images/beans1.jpg" height="60px" width="60px" alt='product_image' /><span>x1</span></div><span>1000$</span></div>
-                            <div className='product_summary'><div className='pic'><img src="./images/beans1.jpg" height="60px" width="60px" alt='product_image' /><span>x1</span></div><span>1000$</span></div>
-                            <div className='product_summary'><div className='pic'><img src="./images/beans1.jpg" height="60px" width="60px" alt='product_image' /><span>x1</span></div><span>1000$</span></div>
+                            {
+                                cartList.map((item, index) => (
+                                    <div className='product_summary'><div className='pic'><img src={item.thumbnail} height="60px" width="60px" alt='product_image' /><span>x{item.quantity}</span></div><span>{item.quantity * item.price}$</span></div>
+                                ))
+                            }
                         </div>
                     </div>
                     <div className='order_sumary'>
@@ -90,19 +206,28 @@ function Checkout() {
                             <h5>Subtotal</h5>
                         </div>
                         <div className='sumary_product'>
-                            <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                            <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                            <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                            <div style={{ textAlign: "right", paddingTop: "5px" }}><span>1000$</span></div>
+                            {
+                                cartList.map((item, index) => (
+                                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "5px" }}><span>{item.title}</span><span>{item.price * item.quantity}$</span></div>
+                                ))
+                            }
+                            <div style={{ textAlign: "right", paddingTop: "5px" }}><span>{sumMoney}$</span></div>
                         </div>
                         <div className="shipping_bill d-flex justify-content-between pt-2 pb-2">
-                            <h5>Shipping</h5><span id="shipping">10$</span></div>
-                        <div className="tax_bill d-flex justify-content-between pt-2 pb-2">
-                            <h5>Tax</h5><span id="shipping">10$</span></div>
-                        <div className="total_bill d-flex justify-content-between align-items-center">
-                            <h3>Total</h3><span id="total" className="flex">1010$</span>
+                            <h5>Shipping</h5>
                         </div>
-                        <Button variant='outline-success' onClick={showModal}>
+                        <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "5px" }}><span>{shipping}</span><span>{shippingCost[shipping] ? shippingCost[shipping] : 0}$</span></div>
+                        <div style={{ textAlign: "right", paddingTop: "5px" }}><span>{shippingCost[shipping] ? shippingCost[shipping] : 0}$</span></div>
+                        <div className="tax_bill d-flex justify-content-between pt-2 pb-2">
+                            <h5>Tax</h5><span id="shipping">{sumMoney * 0.1}$</span></div>
+                        <div className="total_bill d-flex justify-content-between align-items-center">
+                            <h3>Total</h3><span id="total" className="flex">{total}$</span>
+                        </div>
+                        <Button variant='outline-success' onClick={() => {
+                            placeOrder();
+                            delete_cart_A_add_order();
+                            // showModal();
+                        }}>
                             Place order
                         </Button>
                     </div>
@@ -113,4 +238,19 @@ function Checkout() {
 
     );
 }
-export default Checkout;
+const mapStateToProps = (state, ownProps) => {
+    return {
+        state: [state.cart_reducer, state.user_reducer, state.order_reducer]
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deleteCart: () => {
+            dispatch({ type: CART_ACTION.UPDATE_CART, payload: [] })
+        },
+        addOrder: (order) => {
+            dispatch({ type: ORDER_ACTION.UPDATE_ORDER, payload: order })
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

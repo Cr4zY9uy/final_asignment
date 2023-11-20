@@ -1,6 +1,16 @@
-const mongoose=require("mongoose");
-const favourite_schema=new mongoose.Schema({
-    
+const mongoose = require("mongoose");
+const cart_schema = new mongoose.Schema({
+    items: [
+        {
+            title: String,
+            price: Number,
+            quantity: Number,
+            thumbnail: String,
+            product_id: Number
+        }
+    ],
+    tax: Number,
+    total: Number
 });
 
-module.exports=mongoose.model("favourite",favourite_schema);
+module.exports = mongoose.model("cart", cart_schema);

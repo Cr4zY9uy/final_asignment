@@ -1,9 +1,25 @@
 import './cart.css';
+import ScrollToTop from 'react-scroll-to-top';
 import { useNavigate } from 'react-router-dom';
-function Cart() {
+import CART_ACTION from '../../redux/cart/cart_action';
+import { connect } from 'react-redux';
+
+function Cart(props) {
     const navigate = useNavigate();
     const checkout = () => {
         navigate('/checkout');
+    }
+    const cartItems = props.state.cart;
+
+    const sumMoney = cartItems.reduce((initValue, item) => {
+        initValue += item.price * item.quantity;
+        return initValue;
+    }, 0)
+    const taxCost = 0.1 * sumMoney;
+    const deleteItem = (index) => {
+        const deletedCart = [...cartItems];
+        deletedCart.splice(index, 1);
+        props.deleteCart(deletedCart);
     }
     return (
         <div className="container mt-4 d-flex flex-column" >
@@ -23,24 +39,19 @@ function Cart() {
                             </tr>
                         </thead>
                         <tbody id="productShop">
-                            <tr >
-                                <td>1</td>
-                                <td><img src='./images/product1.jfif' width={"120px"} height={"180px"} alt="Product thumbnail" /></td>
-                                <td>The Cofffe</td>
-                                <td>1000$</td>
-                                <td>1</td>
-                                <td>1000$</td>
-                                <td><i className="bi bi-x-lg delete_cart"></i></td>
-                            </tr>
-                            <tr >
-                                <td>1</td>
-                                <td><img src='./images/product1.jfif' width={"120px"} height={"180px"} alt="Product thumbnail" /></td>
-                                <td>The Cofffe</td>
-                                <td>1000$</td>
-                                <td>1</td>
-                                <td>1000$</td>
-                                <td><i className="bi bi-x-lg delete_cart"></i></td>
-                            </tr>
+                            {
+                                cartItems.map((item, index) => (
+                                    <tr >
+                                        <td>{index + 1}</td>
+                                        <td><img src={item.thumbnail} width={"120px"} height={"180px"} alt="Product thumbnail" /></td>
+                                        <td>{item.title}</td>
+                                        <td>{item.price}$</td>
+                                        <td>{item.quantity}</td>
+                                        <td>{item.quantity * item.price}$</td>
+                                        <td><i className="bi bi-x-lg delete_cart" onClick={() => { deleteItem(index) }}></i></td>
+                                    </tr>
+                                ))
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -50,24 +61,41 @@ function Cart() {
                     <div className="subTotal d-flex justify-content-between">
                         <h5>Subtotal</h5>
                     </div> <br />
-
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>The coffee</span><span>1000$</span></div>
-                    <div style={{ textAlign: "right", paddingTop: "10px" }}>1000$
+                    {
+                        cartItems.map((item, index) => (
+                            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>{item.title}</span><span>{item.price * item.quantity}$</span></div>
+                        ))
+                    }
+                    <div style={{ textAlign: "right", paddingTop: "10px" }}>{sumMoney}$
                     </div>
                     <hr />
                     <div className="shipping d-flex justify-content-between">
-                        <h5>Shipping</h5><span id="shipping">10$</span></div>
+                        <h5>Tax</h5></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "5px" }}><span>Value-added tax(VAT)</span><span>{sumMoney ? taxCost : 0}$</span></div>
+                    <div style={{ textAlign: "right", paddingTop: "10px" }}>{sumMoney ? taxCost : 0}$</div>
                     <hr />
                     <div className="total d-flex justify-content-between align-items-center">
-                        <h3>Total</h3><span id="total" className="flex">1010$</span></div>
-                    <button type="button" className="btn btn-danger mt-4" onClick={checkout}>Proceed to checkout</button>
+                        <h3>Total</h3><span id="total" className="flex">{sumMoney ? sumMoney + taxCost : 0}$</span></div>
+                    <button type="button" className="btn btn-danger mt-4 mb-5" onClick={checkout}>Proceed to checkout</button>
                 </div>
             </div>
 
+            <ScrollToTop smooth color="#000" />
 
         </div>
     );
 }
-export default Cart;
+const mapStateToProps = (state, ownProps) => {
+    return {
+        state: state.cart_reducer
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deleteCart: (cart) => {
+            dispatch({ type: CART_ACTION.UPDATE_CART, payload: cart })
+        }
+
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);

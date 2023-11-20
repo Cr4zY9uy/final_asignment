@@ -15,12 +15,16 @@
 .filterPrice span {
     padding: 0.3rem 0;
 }
-.filterCAP h5{
+
+.filterCAP h5 {
     font-size: 25px;
 }
+
 .filterCate span:nth-child(n+4) {
     padding-left: 1rem;
 }
-.clear_all{
+
+.clear {
+    margin-bottom: 10px;
     display: none;
 }

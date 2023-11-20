@@ -116,3 +116,14 @@ input[type="checkbox"] {
 .form_register input:nth-child(n+2) {
     margin-top: -25px;
 }
+
+.home_register {
+    position: relative;
+    top: -46vh;
+    right: -2vw;
+}
+
+.bi-house {
+    text-decoration: none;
+    color: #ffffff;
+}

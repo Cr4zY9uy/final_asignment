@@ -112,3 +112,12 @@ input[type="checkbox"] {
 .flex-col {
   flex-direction: column;
 }
+
+.home_login {
+  position: relative;
+  top: -37vh;
+  right: -2vw;
+}
+@media screen {
+    
+}
