@@ -25,8 +25,7 @@ function Register(props) {
         try {
             const rs = await register(user);
             if (rs.message === "Done") {
-                props.register(user);
-                navigate("/");
+                navigate("/login");
             }
             else {
                 alert("Something's wrong");

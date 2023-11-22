@@ -92,7 +92,6 @@ function Product(props) {
     useEffect(() => {
         loadProduct();
         checkFavourite();
-        console.log(props);
     }, [id, props])
     useEffect(() => {
         if (product.category_name) {

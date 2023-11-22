@@ -54,6 +54,10 @@ const loginValidator = () => {
 }
 app.post("/auth/login", loginValidator(), async function (req, res) {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.json({ errors: errors.array().map(error => error.msg) });
+        }
         const email = req.body.email;
         const u = await userModal.findOne({ email: email });
         if (u == null) {
@@ -484,7 +488,22 @@ app.post("/favourite/add", async function (req, res) {
         return res.json({ message: error.message });
     }
 })
-app.post("/order/add", async function (req, res) {
+const orderValidator = () => {
+    return [
+        check("email", "Vui long nhap email").not().isEmpty(),
+        check("email", "Email phai dung dinh dang").isEmail(),
+        check("first_name", "Tu 6 ky tu").isLength({ min: 6 }),
+        check("last_name", "Tu 6 ky tu").isLength({ min: 6 }),
+        check("phone", "Vui long nhap phone").not().isEmpty(),
+        check("address", "Vui long nhap address").not().isEmpty(),
+        check("address", "Tu 6 ky tu").isLength({ min: 6 })
+    ]
+}
+app.post("/order/add", orderValidator(), async function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.json({ errors: errors.array().map(error => error.msg) });
+    }
     try {
         const data = req.body;
         const c = new orderModal(data);
@@ -494,11 +513,11 @@ app.post("/order/add", async function (req, res) {
         return res.json({ message: error.message });
     }
 })
-app.get("/favourite", async (req, res) => {
+app.get("/favourite/:user_id", async (req, res) => {
     try {
-        const user_id = req.body.user_id;
+        const user_id = req.params.user_id;
         const products = await userModal.findOne({ _id: user_id }).populate('favourite', 'items -_id').select(' _id');
-        if (products.length === 0) {
+        if (products === null) {
             return res.json({ message: "No favourite exist" });
         }
         return res.json({ products: products });
@@ -518,10 +537,10 @@ app.get("/cart", async (req, res) => {
         return res.json({ message: error.message });
     }
 });
-app.get("/order", async (req, res) => {
+app.get("/order/:user_id", async (req, res) => {
     try {
-        const user_id = req.body.user_id;
-        const products = await userModal.findOne({ _id: user_id }).populate('order', 'items first_name last_name address phone payment shipping -_id').select(' _id');
+        const user_id = req.params.user_id;
+        const products = await userModal.findOne({ _id: user_id }).populate('order', 'items first_name last_name address phone payment shipping total createdAt').select(' _id');
         if (products.length === 0) {
             return res.json({ message: "No favourite exist" });
         }
@@ -541,12 +560,11 @@ app.put("/user/foc", async function (req, res) {
         const updatedUser = await userModal.findByIdAndUpdate(
             user_id,
             {
-                favourite: favourite, cart: cart,
+                favourite: favourite,
+                cart: cart,
                 $push: {
-                    order: {
-                        $each: order.map(orderItem => ({ orderItem })),
-                        $position: -1
-                    }
+                    order: order,
+
                 }
             },
             { new: true }
@@ -649,6 +667,7 @@ app.post('/forgot', async (req, res) => {
         //     text: `Click this link below to reset your password. This link will be expired after 5 min.</br>${link}`
         // });
         // console.log("Message sent: %s", info.messageId);
+
     }
     catch (error) {
         return res.json({ message: error.message });
@@ -691,10 +710,10 @@ app.put('/user/update', async (req, res) => {
         const updatedUser = await userModal.findByIdAndUpdate(
             data.user_id,
             {
-                address: data.address,
-                phone: data.phone,
-                full_name: data.full_name,
-                birthday: data.birthday,
+                fullname: data.data.fullname,
+                address: data.data.address,
+                phone: data.data.phone,
+                birthday: data.data.birthday,
             },
             { new: true }
         );
@@ -704,3 +723,22 @@ app.put('/user/update', async (req, res) => {
         return res.json({ message: error.message });
     }
 })
+
+app.get("/user/favourite/:user_id", async (req, res) => {
+    try {
+        const user_id = req.params.user_id;
+
+        // Retrieve the user document with the 'favourite' field
+        const user = await userModal.findOne({ _id: user_id }).select('favourite');
+
+        // Check if the 'favourite' field exists
+        if (!user || !user.favourite) {
+            return res.json({ message: "No favourite exists for this user" });
+        }
+
+        // If the 'favourite' field exists, return the products
+        return res.json(user.favourite);
+    } catch (error) {
+        return res.json({ message: error.message });
+    }
+});

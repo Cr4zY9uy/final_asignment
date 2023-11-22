@@ -19,7 +19,6 @@ function OrdersDetail() {
     }
     useEffect(() => {
         loadOrderDetail();
-        console.log(orderDetail.items)
     }, [orderDetail])
     return (
         <section className="container">

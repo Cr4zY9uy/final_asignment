@@ -7,7 +7,11 @@ import ScrollToTop from "react-scroll-to-top";
 import { Tab, Row, Col, Tabs } from "react-bootstrap";
 import { useEffect, useState } from 'react';
 import { limited_product, new_product, sales_product } from '../../services/product_service';
-function Home() {
+import { list_favourite } from '../../services/favourite_service';
+import FAVOURITE_ACTION from '../../redux/favourite/favourite_action';
+import { connect } from 'react-redux';
+function Home(props) {
+    const user = props.state.currentUser;
     window.scrollTo(0, 0);
     const [limited, setLimited] = useState([]);
     const [sales, setSales] = useState([]);
@@ -19,6 +23,18 @@ function Home() {
         }
         catch (error) {
             console.log(error);
+        }
+    }
+    const getData = async () => {
+        try {
+            const rs = await list_favourite(user.user_id);
+            if (!rs.favourite && !rs._id) {
+                const listF = rs.products.favourite.items;
+                props.updateFavourite(listF);
+            }
+
+        } catch (error) {
+            console.log(error)
         }
     }
     const loadNews = async () => {
@@ -40,6 +56,7 @@ function Home() {
         }
     }
     useEffect(() => {
+        getData();
         loadLimited();
         loadNews();
         loadSales();
@@ -96,4 +113,16 @@ function Home() {
         </>
     );
 }
-export default Home;
+const mapStateToProps = (state, ownProp) => {
+    return {
+        state: state.user_reducer
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateFavourite: (favourite) => {
+            dispatch({ type: FAVOURITE_ACTION.UPDATE_FAVOURITE, payload: favourite })
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -31,6 +31,7 @@ function Account(props) {
         e.preventDefault();
         try {
             const rs = await Update(dataSend);
+            console.log(dataSend);
             if (rs.message === "Done") {
                 alert("Update successfully");
                 LogOut();
@@ -44,7 +45,7 @@ function Account(props) {
         }
     }
     useEffect(() => {
-        if (!user) { navigate('/'); }
+        if (!user.user_id) { navigate('/'); }
     }, [user])
     return (
         <section className='account_page container'>

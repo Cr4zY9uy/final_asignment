@@ -9,7 +9,10 @@ import ORDER_ACTION from '../../redux/order/order_action';
 import ORDER_DETAIL_ACTION from '../../redux/orderdetails/orderdetail_action';
 import { add_order } from '../../services/order_service';
 import { addFOC } from '../../services/user_service';
+import USER_ACTION from '../../redux/user/user_action';
+import NoItems from './noItems';
 function Checkout(props) {
+    const history = useNavigate()
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -26,6 +29,7 @@ function Checkout(props) {
     const order = props.state[2].order;
     const cartList = props.state[0].cart;
     const user_id = props.state[1].currentUser.user_id;
+    const token = props.state[1].jwt;
     const items = cartList.map((product) => ({
         title: product.title,
         thumbnail: product.thumbnail,
@@ -86,46 +90,54 @@ function Checkout(props) {
     }
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
-    const showModal = () => {
-        setIsModalOpen(true);
-        setTimeout(() => {
-            setIsModalOpen(false);
-            navigate('/');
-        }, 2000);
-    };
 
+    const [isExist, setIsExist] = useState(false);
     const placeOrder = async () => {
+        if (!token) {
+            props.logOut();
+            history('/');
+        }
+        if (items.length === 0) {
+            setIsExist(true);
+            setTimeout(() => {
+                setIsExist(false);
+                navigate('/');
+            }, 2000);
+        }
         try {
             const rs = await add_order(order_detail);
-            const order_detail_ls = {
-                order_id: rs,
-                first_name: first_name,
-                last_name: last_name,
-                address: address,
-                phone: phone,
-                email: email,
-                payment: payment,
-                shipping: shipping,
-                items: items,
-                total: total
+            if (rs.message) {
+                alert(rs.message);
             }
-            order.push(order_detail_ls);
-            props.addOrder(order);
-            const O = {
-                user_id: user_id,
-                order: [rs]
+            else {
+                const O = {
+                    user_id: user_id,
+                    order: rs.order_id
+                }
+                setData(O)
             }
-            setData(O)
         } catch (error) {
             console.error(error);
         }
     }
-    // useEffect(() => {
-    //     console.log(data);
-    // }, [data])
+
     const delete_cart_A_add_order = async () => {
+        console.log(data);
         const rs = await addFOC(data);
-        // props.deleteCart();
+        if (rs.message === "Done") {
+            setIsModalOpen(true);
+            setTimeout(() => {
+                setIsModalOpen(false);
+            }, 1000);
+            props.deleteCart();
+            setTimeout(() => {
+                navigate('/');
+            }, 1100);
+
+        }
+        else {
+            console.log(rs.message);
+        }
     }
 
     return (
@@ -138,25 +150,25 @@ function Checkout(props) {
                         <Row>
                             <Col>
                                 <Form.Label>First name</Form.Label>
-                                <Form.Control type="text" name='first_name' onChange={(e) => handleFirstName(e)} />
+                                <Form.Control type="text" name='first_name' onChange={(e) => handleFirstName(e)} required minLength={6} />
                             </Col>
                             <Col>
                                 <Form.Label>Last name</Form.Label>
-                                <Form.Control type="text" name='last_name' onChange={(e) => handleLastName(e)} />
+                                <Form.Control type="text" name='last_name' onChange={(e) => handleLastName(e)} required minLength={6} />
                             </Col>
                         </Row>
                     </Form.Group>
                     <Form.Group className="mb-3" >
                         <Form.Label>Address</Form.Label>
-                        <Form.Control type="text" name='address' onChange={(e) => handleAddress(e)} />
+                        <Form.Control type="text" name='address' onChange={(e) => handleAddress(e)} required />
                     </Form.Group>
                     <Form.Group className="mb-3" >
                         <Form.Label>Phone</Form.Label>
-                        <Form.Control type="text" name='phone' onChange={(e) => handlePhone(e)} />
+                        <Form.Control type="text" name='phone' onChange={(e) => handlePhone(e)} required pattern='[0-9]{10}' />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" name='email' onChange={(e) => handleEmail(e)} />
+                        <Form.Control type="email" name='email' onChange={(e) => handleEmail(e)} required />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Payment method</Form.Label>
@@ -186,9 +198,9 @@ function Checkout(props) {
                             </Col>
                         </Row>
                     </Form.Group>
-
                 </Form>
                 <Thanks status={isModalOpen} />
+                <NoItems status={isExist} />
                 <div className="bill_detail">
                     <div className='order_info'>
                         <h4 className='sumary_title'>Order Information</h4>
@@ -226,7 +238,6 @@ function Checkout(props) {
                         <Button variant='outline-success' onClick={() => {
                             placeOrder();
                             delete_cart_A_add_order();
-                            // showModal();
                         }}>
                             Place order
                         </Button>
@@ -250,7 +261,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         addOrder: (order) => {
             dispatch({ type: ORDER_ACTION.UPDATE_ORDER, payload: order })
-        }
+        },
+        logOut: () => {
+            dispatch({ type: USER_ACTION.LOGOUT, payload: {} })
+        },
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

@@ -25,8 +25,9 @@ const URL = {
     },
     FAVOURITE: {
         ADD: 'favourite/add',
-        LIST: 'favourite',
-        MODIFY: 'favourite/modify'
+        LIST: 'favourite/',
+        MODIFY: 'favourite/modify',
+        GETID: '/user/favourite/'
     },
     CART: {
         ADD: 'cart/add',
@@ -35,7 +36,7 @@ const URL = {
     },
     ORDER: {
         ADD: 'order/add',
-        LIST: 'order',
+        LIST: 'order/',
         GETBYID: 'orderdetail/'
     }
 }

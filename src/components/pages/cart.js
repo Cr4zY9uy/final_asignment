@@ -3,14 +3,27 @@ import ScrollToTop from 'react-scroll-to-top';
 import { useNavigate } from 'react-router-dom';
 import CART_ACTION from '../../redux/cart/cart_action';
 import { connect } from 'react-redux';
-
+import NoItems from './noItems';
+import { useState } from 'react';
 function Cart(props) {
+    const [isExist, setIsExist] = useState(false);
     const navigate = useNavigate();
-    const checkout = () => {
-        navigate('/checkout');
-    }
-    const cartItems = props.state.cart;
 
+    const cartItems = props.state[0].cart;
+    const token = props.state[1].jwt;
+    const checkout = () => {
+        if (cartItems.length === 0) {
+            setIsExist(true);
+            setTimeout(() => {
+                setIsExist(false);
+                navigate('/');
+            }, 2000);
+        }
+        else {
+            navigate('/checkout');
+        }
+
+    }
     const sumMoney = cartItems.reduce((initValue, item) => {
         initValue += item.price * item.quantity;
         return initValue;
@@ -21,6 +34,7 @@ function Cart(props) {
         deletedCart.splice(index, 1);
         props.deleteCart(deletedCart);
     }
+
     return (
         <div className="container mt-4 d-flex flex-column" >
             <div className="row  d-flex justify-content-between" id="shopping">
@@ -55,6 +69,7 @@ function Cart(props) {
                         </tbody>
                     </table>
                 </div>
+                <NoItems status={isExist} />
                 <div className="col-4 invoice">
                     <h3 style={{ paddingBottom: 32 }}>Cart total</h3>
                     <hr />
@@ -87,7 +102,7 @@ function Cart(props) {
 }
 const mapStateToProps = (state, ownProps) => {
     return {
-        state: state.cart_reducer
+        state: [state.cart_reducer, state.user_reducer]
     }
 }
 const mapDispatchToProps = (dispatch) => {

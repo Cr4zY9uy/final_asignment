@@ -15,10 +15,8 @@ const user_schema = new mongoose.Schema({
         ref: 'favourite'
     },
     order: [{
-        order_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'order'
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'order'
     }],
 })
 module.exports = mongoose.model("users", user_schema);

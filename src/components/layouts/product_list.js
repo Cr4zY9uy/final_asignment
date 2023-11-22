@@ -41,7 +41,7 @@ function ProductList(props) {
 
 
     const addToFavourite = () => {
-        const favourite = props.state[1].favourite;
+        const favourite = props.state[1]?.favourite;
 
         const existingItemIndex = favourite.findIndex(favouriteItem => favouriteItem.product_id === product.product_id);
 

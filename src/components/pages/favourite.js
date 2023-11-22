@@ -4,14 +4,50 @@ import ScrollToTop from "react-scroll-to-top";
 import FAVOURITE_ACTION from "../../redux/favourite/favourite_action";
 import { connect } from "react-redux";
 import { Rate } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { add_favourite, get_favourite_id, list_favourite, modify_favourite } from "../../services/favourite_service";
+import { useEffect } from "react";
+import { addFOC } from "../../services/user_service";
 function Favourite(props) {
-    const favouriteList = props.state.favourite;
+    const favouriteList = props.state[0].favourite;
+    const user = props.state[1].currentUser;
+    const navigate = useNavigate();
     const deleteFavourite = (index) => {
         const deleteList = [...favouriteList];
         deleteList.splice(index, 1);
         props.deleteFavourite(deleteList);
     }
+
+    const loadFavourite = async () => {
+        try {
+            const rs = await get_favourite_id(user.user_id);
+            if (rs.message === "No favourite exists for this user") {
+                try {
+                    const en = await add_favourite({ items: favouriteList });
+                    const us = await addFOC({ user_id: user.user_id, favourite: en.favourite_id });
+                    return us;
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            }
+            if (favouriteList.length === 0) {
+                const ds = await modify_favourite({ favourite_id: rs, items: favouriteList });
+                return ds;
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        loadFavourite();
+    }, [favouriteList])
+    useEffect(() => {
+        if (!user.user_id) {
+            navigate('/');
+        }
+    }, [user])
     return (
         <>
             <div className='banner_favourite'>
@@ -51,7 +87,7 @@ function Favourite(props) {
 }
 const mapStateToProps = (state, ownProp) => {
     return {
-        state: state.favourite_reducer
+        state: [state.favourite_reducer, state.user_reducer]
     }
 }
 const mapDispatchToProps = (dispatch) => {

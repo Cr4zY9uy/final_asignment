@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import USER_ACTION from '../../redux/user/user_action';
 import FAVOURITE_ACTION from '../../redux/favourite/favourite_action';
 import CART_ACTION from '../../redux/cart/cart_action';
+import ORDER_ACTION from '../../redux/order/order_action';
 
 function Header(props) {
     const state = props.state;
@@ -25,6 +26,7 @@ function Header(props) {
     const LogOut = () => {
         props.deleteCart();
         props.deleteFavourite();
+        props.deleteOrder();
         props.logOut();
         history('/');
     }
@@ -75,6 +77,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteCart: () => {
             dispatch({ type: CART_ACTION.DELETE_CART, payload: [] })
+        },
+        deleteOrder: () => {
+            dispatch({ type: ORDER_ACTION.DELETE_ORDER, payload: [] })
+
         }
     }
 }

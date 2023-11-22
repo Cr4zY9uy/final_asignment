@@ -2,12 +2,10 @@ import URL from "./url"
 import api from "../api";
 
 export const list_order = async (user_id) => {
-    const url = URL.ORDER.LIST;
+    const url = URL.ORDER.LIST + user_id;
     console.log(user_id);
     try {
-        const rs = await api.get(url, {
-            body: user_id
-        })
+        const rs = await api.get(url)
         return rs.data;
     }
     catch (error) {
